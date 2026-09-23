@@ -29,3 +29,6 @@ Ative GitHub Pages em **Settings → Pages → Deploy from a branch → main →
 
 ## Importante sobre segurança
 A sincronização desta primeira versão usa uma linha JSON compartilhada e políticas públicas para permitir o funcionamento simples no GitHub Pages. Para colocar o aplicativo em produção com dados reais, a próxima etapa recomendada é migrar login e permissões para **Supabase Auth + RLS por usuário**, sem senhas administrativas no JavaScript.
+window.SUPABASE_URL = 'URL_DO_SEU_PROJETO';
+window.SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON';
+
