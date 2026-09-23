@@ -1,30 +1,31 @@
-# Conecta Serviços — PWA
+# Conecta Serviços — PWA com sincronização online
 
-Aplicativo web instalável (PWA) para clientes, profissionais e administrador.
+Esta versão mantém o PWA instalável e adiciona sincronização entre celulares usando Supabase.
 
-## Publicar no GitHub Pages
-1. Crie um repositório no GitHub.
-2. Envie **todos os arquivos e pastas** deste projeto mantendo a estrutura.
-3. Vá em **Settings → Pages**.
-4. Em **Build and deployment**, selecione **Deploy from a branch**.
-5. Escolha a branch `main` e a pasta `/ (root)` e salve.
-6. Abra a URL HTTPS fornecida pelo GitHub Pages.
+## 1. Criar o banco online
+1. Crie um projeto no Supabase.
+2. Abra **SQL Editor**.
+3. Execute o arquivo `supabase.sql` deste projeto.
+4. Em **Project Settings → API**, copie a **Project URL** e a chave **anon/public**.
+5. Abra `config.js` e coloque os dois valores:
+   - `window.SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';`
+   - `window.SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON';`
+6. Não use a chave `service_role` no site.
 
-## Instalação
-- Android/Chrome: quando o navegador liberar a instalação, o botão **Instalar aplicativo** aparece na tela de login; também pode aparecer o comando de instalação no menu do navegador.
-- iPhone/iPad: abra a URL no Safari → **Compartilhar** → **Adicionar à Tela de Início**.
+## 2. Publicar no GitHub Pages
+Envie todos os arquivos para o repositório, incluindo `config.js` e `supabase.sql`.
+Ative GitHub Pages em **Settings → Pages → Deploy from a branch → main → / (root)**.
 
-## Acesso inicial do administrador
-- E-mail: `jefersoncarvalho252@gmail.com`
+## 3. Como fica o fluxo
+- Profissional se cadastra no celular → dados são gravados no Supabase.
+- ADM abre o painel em outro celular → os dados vêm do mesmo banco online.
+- O botão de WhatsApp usa **55 79 99990-55301**.
+- O aplicativo continua instalável como PWA.
+
+## 4. Credenciais iniciais da demonstração
+- ADM: `jefersoncarvalho252@gmail.com`
 - Senha: `ben2018`
-- A senha de autorização para editar/excluir clientes: `26`
+- Senha de autorização de cliente: `26`
 
-## Importante
-Esta versão é uma PWA front-end e usa `localStorage` no aparelho/navegador. Os dados não ficam sincronizados entre celulares. Para uso comercial real, substitua a autenticação e o armazenamento local por um backend/banco de dados seguro (por exemplo, Supabase/Firebase) e não mantenha senhas administrativas diretamente no código do navegador.
-
-
-## Correção do fluxo de cadastro e assinatura
-
-Esta versão encaminha automaticamente o cadastro de clientes e profissionais para o WhatsApp do ADM `55 79 99990-55301`. O profissional também possui um botão para falar com o ADM e contratar o acesso mensal.
-
-**Importante:** GitHub Pages é hospedagem estática. O `localStorage` continua sendo local a cada aparelho/navegador e não sincroniza dados entre usuários. Para o painel ADM receber e visualizar todos os cadastros dentro do próprio app, é necessário adicionar um banco/backend (por exemplo, Supabase ou Firebase). Esta versão usa o WhatsApp como canal imediato de atendimento para não perder os cadastros enquanto o backend não é configurado.
+## Importante sobre segurança
+A sincronização desta primeira versão usa uma linha JSON compartilhada e políticas públicas para permitir o funcionamento simples no GitHub Pages. Para colocar o aplicativo em produção com dados reais, a próxima etapa recomendada é migrar login e permissões para **Supabase Auth + RLS por usuário**, sem senhas administrativas no JavaScript.
