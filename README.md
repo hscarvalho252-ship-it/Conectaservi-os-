@@ -1,34 +1,84 @@
-# Conecta Serviços — PWA com sincronização online
+# Conecta Serviços
 
-Esta versão mantém o PWA instalável e adiciona sincronização entre celulares usando Supabase.
+Projeto HTML/CSS/JavaScript com Supabase para publicar no GitHub Pages.
 
-## 1. Criar o banco online
-1. Crie um projeto no Supabase.
-2. Abra **SQL Editor**.
-3. Execute o arquivo `supabase.sql` deste projeto.
-4. Em **Project Settings → API**, copie a **Project URL** e a chave **anon/public**.
-5. Abra `config.js` e coloque os dois valores:
-   - `window.SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';`
-   - `window.SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON';`
-6. Não use a chave `service_role` no site.
+## O que já está incluído
 
-## 2. Publicar no GitHub Pages
-Envie todos os arquivos para o repositório, incluindo `config.js` e `supabase.sql`.
-Ative GitHub Pages em **Settings → Pages → Deploy from a branch → main → / (root)**.
+- Página inicial com visual escuro e dourado.
+- Cadastro e login com Supabase Auth.
+- Perfis de Cliente, Profissional e Administrador.
+- Cadastro de profissional com taxa de R$ 4,99.
+- Botão automático para conversar com o ADM no WhatsApp.
+- Fluxo de pagamento manual: profissional paga ao ADM, envia comprovante e aguarda confirmação.
+- Painel administrativo para ativar o profissional por 30 dias.
+- Cadastro de serviços e cidade.
+- Clientes podem solicitar orçamento.
+- Profissionais podem aceitar ou recusar solicitações.
+- Link direto para WhatsApp.
 
-## 3. Como fica o fluxo
-- Profissional se cadastra no celular → dados são gravados no Supabase.
-- ADM abre o painel em outro celular → os dados vêm do mesmo banco online.
-- O botão de WhatsApp usa **55 79 99990-55301**.
-- O aplicativo continua instalável como PWA.
+## 1. Criar o projeto no Supabase
 
-## 4. Credenciais iniciais da demonstração
-- ADM: `jefersoncarvalho252@gmail.com`
-- Senha: `ben2018`
-- Senha de autorização de cliente: `26`
+1. Entre em https://supabase.com
+2. Crie um projeto.
+3. Abra SQL Editor.
+4. Cole e execute todo o conteúdo do arquivo `supabase-schema.sql`.
+5. Vá em Project Settings > API e copie:
+   - Project URL
+   - anon public key
 
-## Importante sobre segurança
-A sincronização desta primeira versão usa uma linha JSON compartilhada e políticas públicas para permitir o funcionamento simples no GitHub Pages. Para colocar o aplicativo em produção com dados reais, a próxima etapa recomendada é migrar login e permissões para **Supabase Auth + RLS por usuário**, sem senhas administrativas no JavaScript.
-window.SUPABASE_URL = 'URL_DO_SEU_PROJETO';
-window.SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON';
+## 2. Configurar o HTML
 
+Abra `index.html` e altere:
+
+```js
+const SUPABASE_URL = "COLE_AQUI_SUA_URL_SUPABASE";
+const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_CHAVE_ANON";
+```
+
+O número do ADM já está configurado no código:
+`79999055301`
+
+Se quiser alterar, mude a constante `ADMIN_WHATSAPP`.
+
+## 3. Criar o primeiro administrador
+
+1. Crie um usuário em Authentication > Users.
+2. Faça login uma vez para gerar o perfil.
+3. No SQL Editor execute:
+
+```sql
+update public.profiles
+set role = 'admin'
+where email = 'SEU_EMAIL_ADMIN@EMAIL.COM';
+```
+
+Saia e entre novamente.
+
+## 4. Publicar no GitHub Pages
+
+1. Crie um repositório no GitHub.
+2. Envie `index.html` e `supabase-schema.sql`.
+3. Vá em Settings > Pages.
+4. Em Build and deployment, selecione:
+   - Source: Deploy from a branch
+   - Branch: main
+   - Folder: /root
+5. Salve e aguarde o endereço do site.
+
+## Como funciona o pagamento do profissional
+
+1. O profissional cria a conta.
+2. O cadastro fica com status `pending`.
+3. O sistema abre o WhatsApp do ADM com uma mensagem pronta.
+4. O profissional paga R$ 4,99 diretamente ao ADM via Pix.
+5. O profissional envia o comprovante pelo WhatsApp.
+6. O ADM confere o pagamento.
+7. No painel administrativo, o ADM clica em "Confirmar pagamento e liberar 30 dias".
+8. O sistema grava a data de vencimento em `subscription_until`.
+
+## Observações importantes
+
+- O HTML pode ser hospedado no GitHub Pages, mas os dados e autenticação ficam no Supabase.
+- Não coloque a `service_role key` no HTML. Use somente a chave `anon public`.
+- Para produção, configure também confirmação de e-mail, recuperação de senha, políticas de privacidade e termos de uso.
+- O fluxo Pix deste projeto é manual, conforme solicitado. O sistema não confirma Pix automaticamente.
